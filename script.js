@@ -1,32 +1,27 @@
 // Déclaration des variables.
-let livingNumber = document.querySelector("#livingNumber");
+let livingNumber  = document.querySelector("#livingNumber");
 let vehicleNumber = document.querySelector("#vehicleNumber");
-let planetNumber = document.querySelector("#planetNumber");
+let planetNumber  = document.querySelector("#planetNumber");
 
 // Déclaration des URL.
-let urlPeople = "https://swapi.dev/api/people";
+let urlPeople   = "https://swapi.dev/api/people";
 let urlVehicles = "https://swapi.dev/api/vehicles";
-let urlPlanets = "https://swapi.dev/api/planets";
+let urlPlanets  = "https://swapi.dev/api/planets";
 
-// Récupération des données.
-fetch(urlPeople)
-    .then((response) => response.json())
-    .then((response) => {
-        livingNumber.innerHTML = response.count;
-        livingNumber.style.color = "white";
-    })
+// Fonction asynchrone pour récupérer le nombre d'éléments d'une URL donnée.
+async function getCount(url) {
+    let response = await fetch(url);
+    let data = await response.json();
+    return data.count;
+}
 
-fetch(urlVehicles)
-    .then((response) => response.json())
-    .then((response) => {
-        vehicleNumber.innerHTML = response.count;
-        vehicleNumber.style.color = "white";
-    })
+// Fonction asynchrone pour mettre à jour le nombre d'éléments.
+async function updateCount(element, url) {
+    element.innerHTML = await getCount(url);
+    element.style.color = "white";
+}
 
-fetch(urlPlanets)
-    .then((response) => response.json())
-    .then((response) => {
-        planetNumber.innerHTML = response.count;
-        planetNumber.style.color = "white";
-    })
-
+// Lancements !
+updateCount(livingNumber, urlPeople);
+updateCount(vehicleNumber, urlVehicles);
+updateCount(planetNumber, urlPlanets);

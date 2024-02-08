@@ -146,19 +146,19 @@ body {
     justify-content: space-between;
 
     &__section1 {
-        width: 40%;
+        width: 30%;
 
         .table-container {
             max-height: 400px;
             width: 100%;
             overflow: auto;
 
-            table {
-
-                tr:hover {
+            .table {
+                width: 100%;
+            
+                &__tr:hover {
                     background-color: rgb(136, 192, 208);
                     color: black;
-
                 }
             }
         }
@@ -167,7 +167,7 @@ body {
     }
 
     &__section2 {
-        width: 60%;
+        width: 70%;
     }
 
     &__section1,
@@ -188,7 +188,7 @@ body {
         align-items: center;
 
         i {
-            font-size: 2rem;
+            font-size: 3rem;
             margin: 10px;
         }
     }
@@ -197,5 +197,5 @@ body {
 #planetName {
     color: #88C0D0;
     text-transform: uppercase;
-    font-size: rem;
+    font-size: 2rem;
 }

@@ -2,21 +2,21 @@
 let urlPlanets = "https://swapi.dev/api/planets";
 
 // Variables des éléments du DOM.
-let table = document.querySelector('table');
+let table       = document.querySelector('table');
 let planetInfos = document.querySelector('#planetInfos');
 document.querySelector('#planetRequest').style.display = 'none';
 
 // Fonction qui permet de récupérer le nombre de pages de planètes.
 async function getPagesNumber() {
     let response = await fetch(urlPlanets);
-    let data = await response.json();
+    let data     = await response.json();
     return Math.ceil(data.count / 10);
 }
 
 // Fonction qui permet de récupérer les planètes (du coup sur une seule page).
 async function getPlanets(url) {
     let response = await fetch(url);
-    let data = await response.json();
+    let data     = await response.json();
     return data.results;
 }
 
@@ -27,9 +27,9 @@ async function allPlanets(filterValue) {
 
     // Boucle qui permet de récupérer les planètes de chaque page.
     for (let i = 1; i <= totalPages; i++) {
-        let url = urlPlanets + '?page=' + i;
+        let url     = urlPlanets + '?page=' + i;
         let planets = await getPlanets(url);
-        allPlanets = allPlanets.concat(planets);
+        allPlanets  = allPlanets.concat(planets);
     }
 
     let filteredPlanets = [];
@@ -57,6 +57,7 @@ async function allPlanets(filterValue) {
     // Boucle qui permet d'afficher les planètes dans le tableau.
     filteredPlanets.forEach(planet => {
         let row = document.createElement('tr');
+        row.classList.add('table__tr');
 
         let planetName = document.createElement('td');
         planetName.textContent = planet.name;
@@ -90,5 +91,5 @@ document.querySelector('#populationFilter').addEventListener('change', (event) =
     allPlanets(value);
 });
 
-// Allumage.
+// Allumage !
 allPlanets('1');
