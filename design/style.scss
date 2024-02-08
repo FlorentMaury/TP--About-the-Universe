@@ -2,6 +2,11 @@
 
 // sass --watch ./design/style.scss:./design/style.css --style compressed
 
+@import 'reset';
+@import 'planets';
+@import 'vehicles';
+@import 'people';
+
 body {
     background: black;
     color: white;
@@ -138,64 +143,4 @@ body {
             color: #88C0D0;
         }
     }
-}
-
-.planets {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-
-    &__section1 {
-        width: 30%;
-
-        .table-container {
-            max-height: 400px;
-            width: 100%;
-            overflow: auto;
-
-            .table {
-                width: 100%;
-            
-                &__tr:hover {
-                    background-color: rgb(136, 192, 208);
-                    color: black;
-                }
-            }
-        }
-
-
-    }
-
-    &__section2 {
-        width: 70%;
-    }
-
-    &__section1,
-    &__section2 {
-        border: 1px solid white;
-        margin: 20px;
-        padding: 20px;
-        height: 80%;
-    }
-}
-
-.planetDetails {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    &__titles {
-        display: flex;
-        align-items: center;
-
-        i {
-            font-size: 3rem;
-            margin: 10px;
-        }
-    }
-}
-
-#planetName {
-    color: #88C0D0;
-    text-transform: uppercase;
-    font-size: 2rem;
 }
