@@ -44,11 +44,66 @@
 
         <main class="planets">
             <section class="planets__section1">
+
+                <select id="populationFilter">
+                    <option value="1">Par population</option>
+                    <option value="2">0 à 100.000</option>
+                    <option value="3">100.000 à 100.000.000</option>
+                    <option value="4">+100.000.000</option>
+                </select>
+                
                 <h2>Planètes</h2>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Terrain</th>
+                        </tr>
+                    </table>
+                </div>
+
             </section>
 
             <section class="planets__section2">
-                <p>Selectionnez le contenu à afficher !</p>
+                <p id="planetInfos">Selectionnez le contenu à afficher !</p>
+                <div id="planetRequest">
+                    <h3><span id="planetName"></span></h3>
+                    <p>Population : <span id="planetPopulation"></span></p>
+                    <div class="planetDetails">
+                        <div class="planetDetails__titles">
+                            <i class="fa-regular fa-circle" style="color: #88c0d0;"></i>
+                            <div>
+                                <h5>Diamètre</h5>
+                                <p id="planetDiameter"></p>
+                            </div>
+
+                        </div>
+                        <div class="planetDetails__titles">
+                            <i class="fa-solid fa-temperature-three-quarters" style="color: #88c0d0;"></i>
+                            <div>
+                                <h5>Climat</h5>
+                                <p id="planetClimate"></p>
+                            </div>
+
+                        </div>
+                        <div class="planetDetails__titles">
+                            <i class="fa-solid fa-magnet" style="color: #88c0d0;"></i>
+                            <div>
+                                <h5>Gravité</h5>
+                                <p id="planetGravity"></p>
+                            </div>
+
+                        </div>
+                        <div class="planetDetails__titles">
+                            <i class="fa-solid fa-tree" style="color: #88c0d0;"></i>
+                            <div>
+                                <h5>Terrain</h5>
+                                <p id="planetTerrain"></p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -59,7 +114,7 @@
     </footer>
 
     <script src="https://kit.fontawesome.com/df2db8789f.js" crossorigin="anonymous"></script>
-    <script src="../script.js"></script>
+    <script src="./script.js"></script>
 </body>
 
 </html>
