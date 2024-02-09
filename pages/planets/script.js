@@ -1,105 +1,58 @@
-// Variables.
-let urlPlanets = "https://swapi.dev/api/planets";
+// Variables globales.
 let allPlanets = [];
 
-// Variables des éléments du DOM.
-let table       = document.querySelector('table');
-let planetInfos = document.querySelector('#planetInfos');
-document.querySelector('#planetRequest').style.display = 'none';
-
-// Fonction pour récupérer toutes les planètes au démarrage de l'application.
-async function fetchAllPlanets() {
-    allPlanets = await getAllPlanets();
-}
-
-// Fonction d'initialisation.
+// Fonction de script de la page (histoire).
+onInit();
 async function onInit() {
-    await fetchAllPlanets();
-    let filteredPlanets = filterPlanets('1');
-    clearTable(table);
-    displayPlanets(filteredPlanets, table);
-}
+    const totalPages = await getPagesNumber();
+    await getAllPlanets(totalPages);
+    displayPlanets(allPlanets);
+};
 
-// Fonction qui permet de récupérer le nombre de pages de planètes.
+// Fonctions ---------------------------
+
+// Récupération du nombre de pages.
 async function getPagesNumber() {
-    let response = await fetch(urlPlanets);
-    let data     = await response.json();
-    return Math.ceil(data.count / 10);
-}
+    const response = await fetch("https://swapi.dev/api/planets");
+    const planetsInfos = await response.json();
+    return Math.ceil(planetsInfos.count / 10);
+};
 
-// Fonction qui permet de récupérer les planètes (du coup sur une seule page).
-async function getPlanets(url) {
-    let response = await fetch(url);
-    let data     = await response.json();
-    return data.results;
-}
-
-// Fonction pour récupérer toutes les planètes.
-async function getAllPlanets() {
-    let totalPages = await getPagesNumber();
-    let allPlanets = [];
-
+// Récupération de toutes les planètes.
+async function getAllPlanets(totalPages) {
+    const url = "https://swapi.dev/api/planets/?page="
     for (let i = 1; i <= totalPages; i++) {
-        let url     = urlPlanets + '?page=' + i;
-        let planets = await getPlanets(url);
-        allPlanets  = allPlanets.concat(planets);
-    }
+        const response = await fetch(url + i);
+        const planetsInfos = await response.json();
+        allPlanets.push(...planetsInfos.results);
+    };
+};
 
-    return allPlanets;
-}
-
-// Fonction pour filtrer les planètes en fonction de la population.
-function filterPlanets(filterValue) {
-    let filteredPlanets = [];
-
-    switch (filterValue) {
-        case '1':
-            filteredPlanets = allPlanets;
-            break;
-        case '2':
-            filteredPlanets = allPlanets.filter(planet => planet.population < 100000);
-            break;
-        case '3':
-            filteredPlanets = allPlanets.filter(planet => planet.population >= 100000 && planet.population < 100000000);
-            break;
-        case '4':
-            filteredPlanets = allPlanets.filter(planet => planet.population >= 100000000);
-            break;
-    }
-
-    return filteredPlanets;
-}
-
-// Fonction pour vider le tableau.
-function clearTable(table) {
-    while (table.firstChild) {
-        table.removeChild(table.firstChild);
-    }
-}
-
-// Fonction pour afficher les planètes dans le tableau.
-function displayPlanets(filteredPlanets, table) {
-    filteredPlanets.forEach(planet => {
-        let row = document.createElement('tr');
+// Affichage des planètes.
+function displayPlanets(planets) {
+    const table = document.querySelector('.table');
+    planets.forEach(planet => {
+        const row = document.createElement('tr');
         row.classList.add('table__tr');
-
-        let planetName = document.createElement('td');
+        const planetName = document.createElement('td');
+        const planetClimate = document.createElement('td');
         planetName.textContent = planet.name;
-        row.appendChild(planetName);
-
-        let planetClimate = document.createElement('td');
         planetClimate.textContent = planet.climate;
+        row.appendChild(planetName);
         row.appendChild(planetClimate);
-
         table.appendChild(row);
+        addRowClickListener(row, planet);
+    });
+};
 
-        row.addEventListener('click', () => {
-            displayPlanetDetails(planet);
-        });
+// Ajout d'un écouteur d'événement sur une ligne.
+function addRowClickListener(row, planet) {
+    row.addEventListener('click', () => {
+        displayPlanetDetails(planet);
     });
 }
 
-// Fonction pour afficher les détails d'une planète.
+// Affichage des détails d'une planète.
 function displayPlanetDetails(planet) {
     document.querySelector('#planetName').textContent = planet.name;
     document.querySelector('#planetPopulation').textContent = planet.population;
@@ -110,18 +63,60 @@ function displayPlanetDetails(planet) {
 
     document.querySelector('#planetInfos').style.display = 'none';
     document.querySelector('#planetRequest').style.display = 'block';
+};
+
+// Fonction de filtrage des planètes.
+function filterPlanets(filterValue) {
+    let filteredPlanets = [];
+
+    switch (filterValue) {
+        case '1':
+            filteredPlanets = allPlanets;
+            break;
+        case '2':
+            filteredPlanets = allPlanets.filter(planet => Number(planet.population) < 100000);
+            break;
+        case '3':
+            filteredPlanets = allPlanets.filter(planet => Number(planet.population) >= 100000 && Number(planet.population) < 100000000);
+            break;
+        case '4':
+            filteredPlanets = allPlanets.filter(planet => Number(planet.population) >= 100000000);
+            break;
+    }
+
+    return filteredPlanets;
 }
 
+// Gestion du changement de filtre.
 document.querySelector('#populationFilter').addEventListener('change', (event) => {
     let value = event.target.value;
     let filteredPlanets = filterPlanets(value);
-    clearTable(table);
-    displayPlanets(filteredPlanets, table);
+    clearTable();
+    displayPlanets(filteredPlanets);
 });
 
-// Allumage !
-onInit();
+// Fonction de nettoyage du tableau.
+function clearTable() {
+    const table = document.querySelector('.table');
+    while (table.firstChild) {
+        table.removeChild(table.firstChild);
+    }
+}
 
+// Gestion des erreurs.
+fetch("https://swapi.dev/api/planets")
+    .then(response => {
+        if (response.ok) {
+            return response.json()
+        };
+        throw new Error("Une erreur est survenue.")
+    })
+    .then(response => {
+        console.log(response);
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
 
 
