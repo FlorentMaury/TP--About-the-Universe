@@ -20,18 +20,22 @@ async function getPlanets(url) {
     return data.results;
 }
 
-// Fonction qui permet de récupérer toutes les planètes.
-async function allPlanets(filterValue) {
+// Fonction pour récupérer toutes les planètes.
+async function getAllPlanets() {
     let totalPages = await getPagesNumber();
     let allPlanets = [];
 
-    // Boucle qui permet de récupérer les planètes de chaque page.
     for (let i = 1; i <= totalPages; i++) {
         let url     = urlPlanets + '?page=' + i;
         let planets = await getPlanets(url);
         allPlanets  = allPlanets.concat(planets);
     }
 
+    return allPlanets;
+}
+
+// Fonction pour filtrer les planètes en fonction de la population.
+function filterPlanets(allPlanets, filterValue) {
     let filteredPlanets = [];
 
     switch (filterValue) {
@@ -49,12 +53,18 @@ async function allPlanets(filterValue) {
             break;
     }
 
-    // Supprime toutes les lignes du tableau
+    return filteredPlanets;
+}
+
+// Fonction pour vider le tableau.
+function clearTable(table) {
     while (table.firstChild) {
         table.removeChild(table.firstChild);
     }
+}
 
-    // Boucle qui permet d'afficher les planètes dans le tableau.
+// Fonction pour afficher les planètes dans le tableau.
+function displayPlanets(filteredPlanets, table) {
     filteredPlanets.forEach(planet => {
         let row = document.createElement('tr');
         row.classList.add('table__tr');
@@ -67,23 +77,33 @@ async function allPlanets(filterValue) {
         planetClimate.textContent = planet.climate;
         row.appendChild(planetClimate);
 
-        // Ajoute la ligne au tableau
         table.appendChild(row);
 
-        // Écouteur d'événement qui permet d'afficher les informations de la planète (au clic).
         row.addEventListener('click', () => {
-            document.querySelector('#planetName').textContent = planet.name;
-            document.querySelector('#planetPopulation').textContent = planet.population;
-            document.querySelector('#planetDiameter').textContent = planet.diameter;
-            document.querySelector('#planetClimate').textContent = planet.climate;
-            document.querySelector('#planetGravity').textContent = planet.gravity;
-            document.querySelector('#planetTerrain').textContent = planet.terrain;
-
-            // Cache l'élément planetInfos et affiche la div contenant les détails de la planète
-            document.querySelector('#planetInfos').style.display = 'none';
-            document.querySelector('#planetRequest').style.display = 'block';
+            displayPlanetDetails(planet);
         });
     });
+}
+
+// Fonction pour afficher les détails d'une planète.
+function displayPlanetDetails(planet) {
+    document.querySelector('#planetName').textContent = planet.name;
+    document.querySelector('#planetPopulation').textContent = planet.population;
+    document.querySelector('#planetDiameter').textContent = planet.diameter;
+    document.querySelector('#planetClimate').textContent = planet.climate;
+    document.querySelector('#planetGravity').textContent = planet.gravity;
+    document.querySelector('#planetTerrain').textContent = planet.terrain;
+
+    document.querySelector('#planetInfos').style.display = 'none';
+    document.querySelector('#planetRequest').style.display = 'block';
+}
+
+// Fonction principale qui utilise les fonctions ci-dessus.
+async function allPlanets(filterValue) {
+    let allPlanets = await getAllPlanets();
+    let filteredPlanets = filterPlanets(allPlanets, filterValue);
+    clearTable(table);
+    displayPlanets(filteredPlanets, table);
 }
 
 document.querySelector('#populationFilter').addEventListener('change', (event) => {
