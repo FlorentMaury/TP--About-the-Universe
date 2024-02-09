@@ -3,6 +3,7 @@ let allPlanets = [];
 
 // Fonction de script de la page (histoire).
 onInit();
+
 async function onInit() {
     const totalPages = await getPagesNumber();
     await getAllPlanets(totalPages);
@@ -112,7 +113,7 @@ fetch("https://swapi.dev/api/planets")
         throw new Error("Une erreur est survenue.")
     })
     .then(response => {
-        console.log(response);
+        console.log('Bilboquet, c\'est OK !');
     })
     .catch(err => {
         console.log(err);
